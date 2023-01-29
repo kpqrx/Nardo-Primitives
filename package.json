@@ -7,7 +7,9 @@
   "type": "module",
   "scripts": {
     "build": "rm -rf /dist && rollup -c",
-    "watch": "rollup -w"
+    "watch": "rollup -cw",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "keywords": [
     "React",
@@ -26,12 +28,22 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
+    "@storybook/addon-essentials": "^7.0.0-beta.36",
+    "@storybook/addon-interactions": "^7.0.0-beta.36",
+    "@storybook/addon-links": "^7.0.0-beta.36",
+    "@storybook/blocks": "^7.0.0-beta.36",
+    "@storybook/react": "^7.0.0-beta.36",
+    "@storybook/react-vite": "^7.0.0-beta.36",
+    "@storybook/testing-library": "^0.0.13",
     "@types/react": "^18.0.27",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "rollup": "^3.12.0",
     "rollup-plugin-dts": "^5.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-typescript-paths": "^1.4.0",
+    "storybook": "^7.0.0-beta.36",
     "tslib": "^2.5.0",
     "typescript": "^4.9.4"
   },
