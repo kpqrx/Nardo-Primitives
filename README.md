@@ -1,3 +1,5 @@
+![image](logo.svg)
+
 # Nardo Primitives
 
 A collection of UI primitives for React, designed to provide structure, logic, and accessibility without imposing visual styles.
