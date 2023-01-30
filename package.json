@@ -52,7 +52,8 @@
     "rollup-plugin-typescript-paths": "^1.4.0",
     "storybook": "^7.0.0-beta.36",
     "tslib": "^2.5.0",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "vite-tsconfig-paths": "^4.0.5"
   },
   "peerDependencies": {
     "react": "^18.2.0",
