@@ -12,8 +12,7 @@
     "outDir": "dist",
     "baseUrl": "src",
     "paths": {
-      "@components/*": ["components/*"],
-      "@utils/*": ["utils/*"]
+      "@/*": ["./*"]
     }
   },
   "include": ["src/**/*"],

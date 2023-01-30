@@ -4,11 +4,11 @@ import {
   Container,
   Field,
   Label,
-} from '@components/FormField/FormField.children'
+} from '@/components/FormField/FormField.children'
 import {
   FormFieldContextInterface,
   FormFieldProps,
-} from '@components/FormField/FormField.types'
+} from '@/components/FormField/FormField.types'
 
 export const FormFieldContext =
   createContext<FormFieldContextInterface>(undefined)

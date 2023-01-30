@@ -7,8 +7,8 @@ import React, {
   useCallback,
 } from 'react'
 
-import { ActionTriggerProps } from '@components/FormField/FormField.types'
-import { FormFieldContext } from '@components/FormField/FormField'
+import { ActionTriggerProps } from '@/components/FormField/FormField.types'
+import { FormFieldContext } from '@/components/FormField/FormField'
 
 export const Field = forwardRef(
   <C extends React.ElementType>(
