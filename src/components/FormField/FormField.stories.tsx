@@ -1,5 +1,5 @@
-import React from 'react'
-import type { Meta, StoryObj } from '@storybook/react'
+import React, { useRef, useState } from 'react'
+import type { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import FormField from './FormField'
 
@@ -20,37 +20,59 @@ type Story = StoryObj<typeof FormField>
  * See https://storybook.js.org/docs/7.0/react/api/csf
  * to learn how to use render functions.
  */
-export const InputField: Story = {
-  render: () => (
-    <FormField id="hello">
-      <FormField.Label>First name</FormField.Label>
-      <FormField.Input />
+export const InputField: StoryFn = () => {
+  const ref = useRef<HTMLInputElement>()
+
+  return (
+    <FormField id="formfield">
+      <FormField.Label>Full name: </FormField.Label>
+      <FormField.Input
+        ref={ref}
+        placeholder="John Doe"
+      />
     </FormField>
-  ),
+  )
 }
 
-export const TextAreaField: Story = {
-  render: () => (
-    <FormField id="hello">
+export const ControlledTextAreaField: StoryFn = () => {
+  const [value, setValue] = useState('')
+
+  const handleSetValue = (event) => {
+    const {
+      target: { value },
+    } = event
+
+    setValue(value)
+  }
+
+  return (
+    <FormField id="formfield">
       <FormField.Label>First name</FormField.Label>
-      <FormField.Input type={'textarea'} />
+      <FormField.Input
+        type={'textarea'}
+        value={value}
+        onChange={handleSetValue}
+      />
     </FormField>
-  ),
+  )
 }
 
-export const InputFieldWithCustomActions: Story = {
-  render: () => (
-    <FormField id="hello">
-      {({ setValue }) => (
-        <>
-          <FormField.Label>Identifier: </FormField.Label>
-          <small>Generate unique identifier</small>
-          <FormField.Input readOnly />
-          <button onClick={() => setValue(crypto.randomUUID())}>
-            Generate
-          </button>
-        </>
-      )}
+export const UncontrolledInputFieldWithCustomActions: StoryFn = () => {
+  const ref = useRef<HTMLInputElement>()
+
+  const handleUUIDGeneration = () => {
+    ref.current.value = crypto.randomUUID()
+  }
+
+  return (
+    <FormField id="formfield">
+      <FormField.Label>Identifier: </FormField.Label>
+      <small>Generate unique identifier</small>
+      <FormField.Input
+        ref={ref}
+        readOnly
+      />
+      <button onClick={handleUUIDGeneration}>Generate</button>
     </FormField>
-  ),
+  )
 }

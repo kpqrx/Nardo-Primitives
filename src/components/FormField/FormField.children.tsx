@@ -1,51 +1,35 @@
 import { InputProps, LabelProps } from './FormField.types'
 import React, {
-  ChangeEventHandler,
   ComponentPropsWithoutRef,
+  ForwardedRef,
+  forwardRef,
   useContext,
-  useEffect,
 } from 'react'
 import { FormFieldContext } from './FormField'
 
-export const Input = (props: InputProps) => {
-  const { type, value: defaultValue, ...restProps } = props
-  const { value, setValue, id, name } = useContext(FormFieldContext)
+export const Input = forwardRef((props: InputProps, ref) => {
+  const { type, ...restProps } = props
+  const { id, name } = useContext(FormFieldContext)
 
-  useEffect(() => {
-    if (defaultValue) {
-      setValue(defaultValue)
-    }
-  })
-
-  const handleSetValue: ChangeEventHandler<
-    HTMLInputElement | HTMLTextAreaElement
-  > = (event) => {
-    const {
-      target: { value },
-    } = event
-
-    setValue(value)
-  }
+  console.log(restProps.ref)
 
   return type === 'textarea' ? (
     <textarea
-      value={value}
-      onChange={handleSetValue}
-      {...(restProps as ComponentPropsWithoutRef<'textarea'>)}
       id={id}
       name={name}
+      ref={ref as ForwardedRef<HTMLTextAreaElement>}
+      {...(restProps as ComponentPropsWithoutRef<'textarea'>)}
     />
   ) : (
     <input
-      value={value}
-      onChange={handleSetValue}
-      type={type}
-      {...(restProps as ComponentPropsWithoutRef<'input'>)}
       id={id}
       name={name}
+      type={type}
+      ref={ref as ForwardedRef<HTMLInputElement>}
+      {...(restProps as ComponentPropsWithoutRef<'input'>)}
     />
   )
-}
+})
 
 export const Label = (props: LabelProps) => {
   const { children, ...restProps } = props

@@ -1,28 +1,23 @@
 import {
-  ComponentPropsWithoutRef,
-  FunctionComponent,
+  ComponentPropsWithRef,
   HTMLInputTypeAttribute,
-  ReactNode,
+  PropsWithChildren,
 } from 'react'
 
-export interface FormFieldProps {
+export interface FormFieldProps extends PropsWithChildren {
   id?: string
   name?: string
-  children: ReactNode | ((renderProps: FormFieldContextType) => ReactNode)
 }
 
 export type LabelProps = {
   children: string
 }
 
-export type InputProps = ComponentPropsWithoutRef<'input' | 'textarea'> & {
+export type InputProps = ComponentPropsWithRef<any> & {
   type?: HTMLInputTypeAttribute | 'textarea'
-  value?: string
 }
 
 export type FormFieldContextType = {
-  value?: string
-  setValue?: (value: string) => void
   id?: string
   name?: string
 }
