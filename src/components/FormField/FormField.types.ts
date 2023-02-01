@@ -1,20 +1,28 @@
-import React from 'react'
+import {
+  ComponentPropsWithoutRef,
+  FunctionComponent,
+  HTMLInputTypeAttribute,
+  ReactNode,
+} from 'react'
 
-export interface FormFieldContextInterface {
-  as: 'input' | 'textarea'
-  id: string
-  defaultValue: string
+export interface FormFieldProps {
+  id?: string
+  name?: string
+  children: ReactNode | ((renderProps: FormFieldContextType) => ReactNode)
 }
 
-export interface FormFieldProps extends React.PropsWithChildren {
-  as?: 'input' | 'textarea'
-  id: string
+export type LabelProps = {
+  children: string
+}
+
+export type InputProps = ComponentPropsWithoutRef<'input' | 'textarea'> & {
+  type?: HTMLInputTypeAttribute | 'textarea'
   value?: string
 }
 
-export interface ActionTriggerProps
-  extends React.PropsWithChildren,
-    React.HTMLAttributes<HTMLButtonElement> {
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+export type FormFieldContextType = {
   value?: string
+  setValue?: (value: string) => void
+  id?: string
+  name?: string
 }

@@ -1,48 +1,24 @@
-import React, { createContext, useEffect } from 'react'
-import {
-  ActionTrigger,
-  Container,
-  Field,
-  Label,
-} from '@/components/FormField/FormField.children'
-import {
-  FormFieldContextInterface,
-  FormFieldProps,
-} from '@/components/FormField/FormField.types'
+import React, { createContext, useState } from 'react'
+import { FormFieldContextType, FormFieldProps } from './FormField.types'
+import { Label, Input } from './FormField.children'
 
-export const FormFieldContext =
-  createContext<FormFieldContextInterface>(undefined)
+export const FormFieldContext = createContext<FormFieldContextType>({})
 
 const FormField = (props: FormFieldProps) => {
-  const {
-    children,
-    as = 'input',
-    id,
-    value: defaultValue = '',
-    ...restProps
-  } = props
-
-  useEffect(() => {
-    const areRequiredChildrenProvided = [Field, Label].every((requiredChild) =>
-      React.Children.toArray(children).some(
-        (child: React.ReactElement) => requiredChild === child.type
-      )
-    )
-
-    if (!areRequiredChildrenProvided) {
-      throw new Error('Required children are not provided.')
-    }
-  }, [])
+  const { children, id, name } = props
+  const [value, setValue] = useState('')
 
   return (
-    <FormFieldContext.Provider value={{ as, id, defaultValue }}>
-      <Container {...restProps}>{children}</Container>
-    </FormFieldContext.Provider>
+    <label>
+      <FormFieldContext.Provider value={{ value, setValue, id, name }}>
+        {children instanceof Function
+          ? children({ value, setValue, id, name })
+          : children}
+      </FormFieldContext.Provider>
+    </label>
   )
 }
-
-FormField.Field = Field
 FormField.Label = Label
-FormField.ActionTrigger = ActionTrigger
+FormField.Input = Input
 
 export default FormField

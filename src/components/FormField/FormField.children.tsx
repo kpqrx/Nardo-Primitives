@@ -1,79 +1,54 @@
+import { InputProps, LabelProps } from './FormField.types'
 import React, {
-  ChangeEvent,
-  useState,
-  forwardRef,
+  ChangeEventHandler,
+  ComponentPropsWithoutRef,
   useContext,
-  useMemo,
-  useCallback,
+  useEffect,
 } from 'react'
+import { FormFieldContext } from './FormField'
 
-import { ActionTriggerProps } from '@/components/FormField/FormField.types'
-import { FormFieldContext } from '@/components/FormField/FormField'
+export const Input = (props: InputProps) => {
+  const { type, value: defaultValue, ...restProps } = props
+  const { value, setValue, id, name } = useContext(FormFieldContext)
 
-export const Field = forwardRef(
-  <C extends React.ElementType>(
-    props: React.ComponentPropsWithRef<C>,
-    ref: React.Ref<C>
-  ) => {
-    const { id, as: Component, defaultValue } = useContext(FormFieldContext)
-    const [value, setValue] = useState(defaultValue)
-
-    const handleChange = (
-      event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-      const {
-        target: { value: fieldValue },
-      } = event
-
-      setValue(fieldValue)
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(defaultValue)
     }
+  })
 
-    return (
-      <Component
-        id={id}
-        ref={ref}
-        value={value}
-        onChange={handleChange}
-        data-has-value={value.length > 0}
-        {...props}
-      />
-    )
+  const handleSetValue: ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  > = (event) => {
+    const {
+      target: { value },
+    } = event
+
+    setValue(value)
   }
-)
 
-export const Container = React.memo((props: React.PropsWithChildren) => {
-  const { children, ...restProps } = props
-  return <div {...restProps}>{children}</div>
-})
-
-export const Label = (props: React.PropsWithChildren) => {
-  const { children, ...restProps } = props
-  const { id } = useContext(FormFieldContext)
-
-  return (
-    <label
-      htmlFor={id}
-      {...restProps}
-    >
-      {children}
-    </label>
+  return type === 'textarea' ? (
+    <textarea
+      value={value}
+      onChange={handleSetValue}
+      {...(restProps as ComponentPropsWithoutRef<'textarea'>)}
+      id={id}
+      name={name}
+    />
+  ) : (
+    <input
+      value={value}
+      onChange={handleSetValue}
+      type={type}
+      {...(restProps as ComponentPropsWithoutRef<'input'>)}
+      id={id}
+      name={name}
+    />
   )
 }
 
-export const ActionTrigger = (props: ActionTriggerProps) => {
-  const { children, onClick, ...restProps } = props
-  const handleClick = useCallback((event) => onClick(event), [])
-  return (
-    <button
-      onClick={handleClick}
-      {...restProps}
-    >
-      {children}
-    </button>
-  )
-}
+export const Label = (props: LabelProps) => {
+  const { children, ...restProps } = props
 
-Container.displayName = 'Container'
-Field.displayName = 'Field'
-Label.displayName = 'Label'
-ActionTrigger.displayName = 'ActionTrigger'
+  return <span {...restProps}>{children}</span>
+}
