@@ -8,11 +8,13 @@ const FormField = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   FormFieldProps
 >((props, ref) => {
-  const { children, ...contextValue } = props
+  const { children, id, name, type, onChange, value, ...restProps } = props
 
   return (
-    <label>
-      <FormFieldContext.Provider value={{ ...contextValue, ref }}>
+    <label {...restProps}>
+      <FormFieldContext.Provider
+        value={{ id, name, type, onChange, value, ref }}
+      >
         {children}
       </FormFieldContext.Provider>
     </label>

@@ -6,17 +6,20 @@ import {
   PropsWithChildren,
 } from 'react'
 
-export type FormFieldContextType = {
+export type FormFieldContextType = FormFieldBaseProps & {
+  ref?: React.Ref<HTMLInputElement | HTMLTextAreaElement>
+}
+
+type FormFieldBaseProps = {
   id?: string
   name?: string
   type?: HTMLInputTypeAttribute | 'textarea'
-  ref?: React.Ref<HTMLInputElement | HTMLTextAreaElement>
   value?: string
   onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 }
-
-export interface FormFieldProps
-  extends PropsWithChildren<FormFieldContextType> {}
+export interface FormFieldProps extends PropsWithChildren<FormFieldBaseProps> {
+  className?: string
+}
 
 export type LabelProps = {
   children: string
