@@ -1,35 +1,21 @@
 import { InputProps, LabelProps } from './FormField.types'
-import React, {
-  ComponentPropsWithoutRef,
-  ForwardedRef,
-  forwardRef,
-  useContext,
-} from 'react'
+import React, { ElementType, useContext } from 'react'
 import { FormFieldContext } from './FormField'
 
-export const Input = forwardRef((props: InputProps, ref) => {
+export const Input = <T extends ElementType>(props: InputProps<T>) => {
   const { type, ...restProps } = props
-  const { id, name } = useContext(FormFieldContext)
+  const { ref, ...restInputAttributes } = useContext(FormFieldContext)
 
-  console.log(restProps.ref)
+  const ComponentTag = type === 'textarea' ? type : 'input'
 
-  return type === 'textarea' ? (
-    <textarea
-      id={id}
-      name={name}
-      ref={ref as ForwardedRef<HTMLTextAreaElement>}
-      {...(restProps as ComponentPropsWithoutRef<'textarea'>)}
-    />
-  ) : (
-    <input
-      id={id}
-      name={name}
-      type={type}
-      ref={ref as ForwardedRef<HTMLInputElement>}
-      {...(restProps as ComponentPropsWithoutRef<'input'>)}
+  return (
+    <ComponentTag
+      ref={ref}
+      {...restInputAttributes}
+      {...restProps}
     />
   )
-})
+}
 
 export const Label = (props: LabelProps) => {
   const { children, ...restProps } = props

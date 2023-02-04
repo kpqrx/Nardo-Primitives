@@ -24,12 +24,12 @@ export const InputField: StoryFn = () => {
   const ref = useRef<HTMLInputElement>()
 
   return (
-    <FormField id="formfield">
+    <FormField
+      id="formfield"
+      ref={ref}
+    >
       <FormField.Label>Full name: </FormField.Label>
-      <FormField.Input
-        ref={ref}
-        placeholder="John Doe"
-      />
+      <FormField.Input placeholder="John Doe" />
     </FormField>
   )
 }
@@ -46,13 +46,14 @@ export const ControlledTextAreaField: StoryFn = () => {
   }
 
   return (
-    <FormField id="formfield">
+    <FormField
+      id="formfield"
+      type={'textarea'}
+      value={value}
+      onChange={handleSetValue}
+    >
       <FormField.Label>First name</FormField.Label>
-      <FormField.Input
-        type={'textarea'}
-        value={value}
-        onChange={handleSetValue}
-      />
+      <FormField.Input />
     </FormField>
   )
 }
@@ -65,13 +66,13 @@ export const UncontrolledInputFieldWithCustomActions: StoryFn = () => {
   }
 
   return (
-    <FormField id="formfield">
+    <FormField
+      id="formfield"
+      ref={ref}
+    >
       <FormField.Label>Identifier: </FormField.Label>
       <small>Generate unique identifier</small>
-      <FormField.Input
-        ref={ref}
-        readOnly
-      />
+      <FormField.Input readOnly />
       <button onClick={handleUUIDGeneration}>Generate</button>
     </FormField>
   )
