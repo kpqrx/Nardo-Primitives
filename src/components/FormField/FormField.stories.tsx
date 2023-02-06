@@ -34,6 +34,21 @@ export const InputField: StoryFn = () => {
   )
 }
 
+export const CheckboxField: StoryFn = () => {
+  const ref = useRef<HTMLInputElement>()
+
+  return (
+    <FormField
+      id="formfield"
+      type="checkbox"
+      ref={ref}
+    >
+      <FormField.Label>Am I awesome? 🚀: </FormField.Label>
+      <FormField.Input defaultChecked />
+    </FormField>
+  )
+}
+
 export const ControlledTextAreaField: StoryFn = () => {
   const [value, setValue] = useState('')
 
