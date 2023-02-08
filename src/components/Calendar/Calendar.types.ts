@@ -1,6 +1,8 @@
 export interface CalendarProps extends React.PropsWithChildren {
   weekdays: string[]
-  defaultDate: Date
+  defaultDate?: Date
+  value?: Date
+  onChange?: React.Dispatch<React.SetStateAction<Date>>
 }
 
 export type CalendarContextType = {

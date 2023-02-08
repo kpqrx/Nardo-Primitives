@@ -9,10 +9,20 @@ import {
 export const CalendarContext = createContext<CalendarContextType>({})
 
 const Calendar = (props: CalendarProps) => {
-  const { children, weekdays, defaultDate } = props
-  const [currentDate, setCurrentDate] = useState(defaultDate)
+  const {
+    children,
+    weekdays,
+    defaultDate = new Date(),
+    value: currentDate,
+    onChange: setCurrentDate,
+  } = props
+
+  if ((currentDate && !setCurrentDate) || (!currentDate && setCurrentDate)) {
+    throw new Error('xd')
+  }
+
   const [displayedDate, setDisplayedDate] = useState(
-    new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    new Date(defaultDate.getFullYear(), defaultDate.getMonth(), 1)
   )
 
   const switchDisplayedDate: SwitchDisplayedDateFunctionType = (
