@@ -8,7 +8,7 @@ import {
   MonthSwitcherProps,
 } from './Calendar.types'
 
-export function MonthSwitcherButton(props: MonthSwitcherProps) {
+export const MonthSwitcherButton = (props: MonthSwitcherProps) => {
   const { direction, children, onClick, ...restProps } = props
   const { switchDisplayedDate } = useContext(CalendarContext)
 
@@ -27,7 +27,7 @@ export function MonthSwitcherButton(props: MonthSwitcherProps) {
   )
 }
 
-export function DaysGrid(props: DaysGridProps) {
+export const DaysGrid = (props: DaysGridProps) => {
   const { render, ...restProps } = props
   const { setCurrentDate, displayedDate, switchDisplayedDate } =
     useContext(CalendarContext)

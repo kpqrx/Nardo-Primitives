@@ -8,7 +8,7 @@ import {
 
 export const CalendarContext = createContext<CalendarContextType>({})
 
-function Calendar(props: CalendarProps) {
+const Calendar = (props: CalendarProps) => {
   const { children, weekdays, defaultDate } = props
   const [currentDate, setCurrentDate] = useState(defaultDate)
   const [displayedDate, setDisplayedDate] = useState(
