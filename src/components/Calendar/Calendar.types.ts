@@ -1,12 +1,11 @@
 export interface CalendarProps extends React.PropsWithChildren {
-  weekdays: string[]
   defaultDate?: Date
   value?: Date
   onChange?: React.Dispatch<React.SetStateAction<Date>>
+  className?: string
 }
 
 export type CalendarContextType = {
-  weekdays?: string[]
   currentDate?: Date
   setCurrentDate?: React.Dispatch<React.SetStateAction<Date>>
   displayedDate?: Date
@@ -20,13 +19,20 @@ export type SwitchDisplayedDateFunctionType = (
 
 export type MonthDirectionType = 'next' | 'previous'
 
-export type MonthSwitcherProps = React.PropsWithChildren & {
-  direction: MonthDirectionType
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
+export type MonthSwitcherProps = React.HTMLAttributes<unknown> &
+  React.PropsWithChildren & {
+    direction: MonthDirectionType
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+  }
+
+export type DaysGridProps = React.HTMLAttributes<unknown> & {
+  completeWithExtraDays?: MonthDirectionType | 'both'
+  render: (renderProps: { day: number; onClick: () => void }) => React.ReactNode
 }
 
-export type DaysGridProps = {
-  render: (renderProps: { day: number; onClick: () => void }) => React.ReactNode
+export type SelectedDateProps = React.HTMLAttributes<unknown> & {
+  scope: 'currentDate' | 'displayedDate'
+  render: (scopedDateObject: Date) => React.ReactNode
 }
 
 type DayType = {
@@ -36,4 +42,4 @@ type DayType = {
 
 export type HandleSetCurrentDateType = (args: DayType) => void
 
-export type DaysDataType = DayType[]
+export type DaysArrayType = DayType[]

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import type { Meta, StoryFn, StoryObj } from '@storybook/react'
+import './Calendar.stories.styles.css'
 
 import Calendar from './Calendar'
 
@@ -37,19 +38,28 @@ export const Default: StoryFn = () => {
         type="date"
         value={dateString}
         readOnly
+        className="elo"
       />
       <Calendar
-        weekdays={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
         value={date}
         onChange={setDate}
+        className="calendar"
       >
-        <Calendar.MonthSwitcherButton direction="previous">
-          Previous
-        </Calendar.MonthSwitcherButton>
-        <Calendar.MonthSwitcherButton direction="next">
-          Next
-        </Calendar.MonthSwitcherButton>
+        <div className="calendar__header">
+          <Calendar.MonthSwitcherButton direction="previous">
+            Previous
+          </Calendar.MonthSwitcherButton>
+          <Calendar.SelectedDate
+            scope="displayedDate"
+            render={(date) => <span>{date.toDateString()}</span>}
+          />
+          <Calendar.MonthSwitcherButton direction="next">
+            Next
+          </Calendar.MonthSwitcherButton>
+        </div>
         <Calendar.DaysGrid
+          className="calendar__body"
+          completeWithExtraDays="both"
           render={({ day, onClick }) => (
             <button onClick={onClick}>{day}</button>
           )}

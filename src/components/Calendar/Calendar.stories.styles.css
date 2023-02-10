@@ -1,0 +1,15 @@
+.calendar__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.calendar {
+  display: flex;
+  flex-flow: column;
+  max-width: 320px;
+}
+
+.calendar__body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}

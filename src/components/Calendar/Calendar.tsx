@@ -1,5 +1,9 @@
 import React, { createContext, useState } from 'react'
-import { DaysGrid, MonthSwitcherButton } from './Calendar.children'
+import {
+  DaysGrid,
+  MonthSwitcherButton,
+  SelectedDate,
+} from './Calendar.children'
 import {
   CalendarContextType,
   CalendarProps,
@@ -11,10 +15,10 @@ export const CalendarContext = createContext<CalendarContextType>({})
 const Calendar = (props: CalendarProps) => {
   const {
     children,
-    weekdays,
     defaultDate = new Date(),
     value: currentDate,
     onChange: setCurrentDate,
+    ...restProps
   } = props
 
   if ((currentDate && !setCurrentDate) || (!currentDate && setCurrentDate)) {
@@ -42,23 +46,13 @@ const Calendar = (props: CalendarProps) => {
   return (
     <CalendarContext.Provider
       value={{
-        weekdays,
         currentDate,
         setCurrentDate,
         displayedDate,
         switchDisplayedDate,
       }}
     >
-      <div>
-        <div>
-          {weekdays.map((x) => (
-            <span style={{ width: '36px' }}>{x}</span>
-          ))}
-        </div>
-        <span>{currentDate.toDateString()}</span>
-        <span>{displayedDate.toDateString()}</span>
-        {children}
-      </div>
+      <div {...restProps}>{children}</div>
     </CalendarContext.Provider>
   )
 }
@@ -66,6 +60,7 @@ const Calendar = (props: CalendarProps) => {
 const CalendarNamespace = Object.assign(Calendar, {
   DaysGrid,
   MonthSwitcherButton,
+  SelectedDate,
 })
 
 export default CalendarNamespace
