@@ -7,22 +7,41 @@ export const ControlsList = (props: ControlsListProps) => {
   const { controls, activeTab, setActiveTab } = useContext(TabsContext)
   const tabsListRef = useRef<HTMLUListElement>()
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     const { key, target } = event
 
     const controlButtons = [...tabsListRef.current.children].map(
-      (tabsListChild) => tabsListChild.closest('button')
-    )
+      (tabsListChild) =>
+        [...tabsListChild.children].find(
+          ({ localName }) => localName === 'button'
+        )
+    ) as HTMLButtonElement[]
 
-    const controlButtonFocusCandidateIndex =
-      controlButtons.indexOf(target as HTMLButtonElement) +
-        (['ArrowLeft', 'ArrowUp'].includes(key)
-          ? -1
-          : ['ArrowRight', 'ArrowDown'].includes(key)
-          ? 1
-          : 0) || controlButtons.length - 1
+    let focusCandidateIndex
 
-    controlButtons[controlButtonFocusCandidateIndex].focus()
+    switch (key) {
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        focusCandidateIndex =
+          controlButtons.indexOf(target as HTMLButtonElement) - 1
+        break
+      case 'ArrowDown':
+      case 'ArrowRight':
+        focusCandidateIndex =
+          controlButtons.indexOf(target as HTMLButtonElement) + 1
+        break
+      default:
+        return
+    }
+
+    focusCandidateIndex =
+      focusCandidateIndex < 0
+        ? controlButtons.length - 1
+        : focusCandidateIndex > controlButtons.length - 1
+        ? 0
+        : focusCandidateIndex
+
+    controlButtons[focusCandidateIndex].focus()
     event.preventDefault()
   }
 
@@ -52,9 +71,9 @@ export const ControlsList = (props: ControlsListProps) => {
 
 export const Panel = (props: ItemProps) => {
   const { children, id, ...restProps } = props
-  const { controls } = useContext(TabsContext)
+  const { controls, activeTab } = useContext(TabsContext)
 
-  if (!controls.map(({ id: controlId }) => controlId).includes[id]) {
+  if (!controls.map(({ id: controlId }) => controlId).includes(id)) {
     throw new Error(
       'Given identifier does not represent any provided control item.'
     )
@@ -65,6 +84,8 @@ export const Panel = (props: ItemProps) => {
       role="tabpanel"
       aria-labelledby={`tabs-item-control-${id}`}
       id={`tabs-item-panel-${id}`}
+      hidden={activeTab !== id}
+      aria-hidden={activeTab !== id}
       {...restProps}
     >
       {children}

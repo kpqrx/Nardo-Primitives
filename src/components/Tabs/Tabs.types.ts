@@ -1,5 +1,6 @@
 type ControlsType = {
   id: string | number
+  [k: string]: any
 }[]
 
 export interface TabsProps extends React.PropsWithChildren {
