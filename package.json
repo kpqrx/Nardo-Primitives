@@ -9,7 +9,8 @@
     "build": "rm -rf /dist && rollup -c",
     "watch": "rollup -cw",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "create-component": "node ./create-component.cjs"
   },
   "keywords": [
     "React",
