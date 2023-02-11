@@ -1,4 +1,13 @@
-import React, { KeyboardEvent, useContext, useRef } from 'react'
+import { getFocusableChildren } from '@/utils'
+import React, {
+  Children,
+  KeyboardEvent,
+  MouseEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { TabsContext } from './Tabs'
 import { ControlsListProps, ItemProps } from './Tabs.types'
 
@@ -6,6 +15,7 @@ export const ControlsList = (props: ControlsListProps) => {
   const { render } = props
   const { controls, activeTab, setActiveTab } = useContext(TabsContext)
   const tabsListRef = useRef<HTMLUListElement>()
+  const [focusedTab, setFocusedTab] = useState<string | number>(undefined)
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const { key, target } = event
@@ -45,6 +55,11 @@ export const ControlsList = (props: ControlsListProps) => {
     event.preventDefault()
   }
 
+  const handleTabToggle = (id: string | number) => {
+    setActiveTab(id)
+    setFocusedTab(id)
+  }
+
   return (
     <ul
       role="tablist"
@@ -58,8 +73,9 @@ export const ControlsList = (props: ControlsListProps) => {
             id={`tabs-item-control-${id}`}
             aria-controls={`tabs-item-panel-${id}`}
             aria-selected={activeTab === id}
-            onClick={() => setActiveTab(id)}
+            onClick={() => handleTabToggle(id)}
             onKeyDown={handleKeyDown}
+            tabIndex={[activeTab, focusedTab].includes(id) ? 0 : -1}
           >
             {render(item)}
           </button>
@@ -72,6 +88,12 @@ export const ControlsList = (props: ControlsListProps) => {
 export const Panel = (props: ItemProps) => {
   const { children, id, ...restProps } = props
   const { controls, activeTab } = useContext(TabsContext)
+  const [hasFocusableChildren, setHasFocusableChildren] = useState(false)
+  const panelRef = useRef<HTMLDivElement>()
+
+  useEffect(() => {
+    setHasFocusableChildren(getFocusableChildren(panelRef.current).length > 0)
+  }, [children])
 
   if (!controls.map(({ id: controlId }) => controlId).includes(id)) {
     throw new Error(
@@ -86,6 +108,8 @@ export const Panel = (props: ItemProps) => {
       id={`tabs-item-panel-${id}`}
       hidden={activeTab !== id}
       aria-hidden={activeTab !== id}
+      ref={panelRef}
+      tabIndex={hasFocusableChildren ? -1 : 0}
       {...restProps}
     >
       {children}
