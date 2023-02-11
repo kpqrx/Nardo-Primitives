@@ -5,11 +5,13 @@ import { TabsContextType, TabsProps } from './Tabs.types'
 export const TabsContext = createContext<TabsContextType>({})
 
 function Tabs(props: TabsProps) {
-  const { children, defaultTab, controls, ...restProps } = props
+  const { children, defaultTab, controls, activationMode, ...restProps } = props
   const [activeTab, setActiveTab] = useState(defaultTab || controls[0].id)
 
   return (
-    <TabsContext.Provider value={{ controls, activeTab, setActiveTab }}>
+    <TabsContext.Provider
+      value={{ controls, activeTab, setActiveTab, activationMode }}
+    >
       <div {...restProps}>{children}</div>
     </TabsContext.Provider>
   )

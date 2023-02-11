@@ -1,8 +1,8 @@
 import { getFocusableChildren } from '@/utils'
 import React, {
-  Children,
   KeyboardEvent,
   MouseEvent,
+  FocusEvent,
   useContext,
   useEffect,
   useRef,
@@ -13,7 +13,8 @@ import { ControlsListProps, ItemProps } from './Tabs.types'
 
 export const ControlsList = (props: ControlsListProps) => {
   const { render } = props
-  const { controls, activeTab, setActiveTab } = useContext(TabsContext)
+  const { controls, activeTab, setActiveTab, activationMode } =
+    useContext(TabsContext)
   const tabsListRef = useRef<HTMLUListElement>()
   const [focusedTab, setFocusedTab] = useState<string | number>(undefined)
 
@@ -55,7 +56,17 @@ export const ControlsList = (props: ControlsListProps) => {
     event.preventDefault()
   }
 
-  const handleTabToggle = (id: string | number) => {
+  const handleTabToggle = (
+    event: MouseEvent | FocusEvent,
+    id: string | number
+  ) => {
+    if (
+      (activationMode === 'auto' && event.type == 'click') ||
+      (activationMode === 'manual' && event.type == 'focus')
+    ) {
+      event.preventDefault()
+      return
+    }
     setActiveTab(id)
     setFocusedTab(id)
   }
@@ -73,7 +84,8 @@ export const ControlsList = (props: ControlsListProps) => {
             id={`tabs-item-control-${id}`}
             aria-controls={`tabs-item-panel-${id}`}
             aria-selected={activeTab === id}
-            onClick={() => handleTabToggle(id)}
+            onClick={(event) => handleTabToggle(event, id)}
+            onFocus={(event) => handleTabToggle(event, id)}
             onKeyDown={handleKeyDown}
             tabIndex={[activeTab, focusedTab].includes(id) ? 0 : -1}
           >

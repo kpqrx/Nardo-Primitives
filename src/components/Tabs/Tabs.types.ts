@@ -6,6 +6,7 @@ type ControlsType = {
 export interface TabsProps extends React.PropsWithChildren {
   defaultTab?: string | number
   controls: ControlsType
+  activationMode: 'auto' | 'manual'
 }
 
 export type ItemProps = React.PropsWithChildren & {
@@ -20,4 +21,5 @@ export type TabsContextType = {
   controls?: ControlsType
   activeTab?: string | number
   setActiveTab?: React.Dispatch<React.SetStateAction<string | number>>
+  activationMode?: 'auto' | 'manual'
 }

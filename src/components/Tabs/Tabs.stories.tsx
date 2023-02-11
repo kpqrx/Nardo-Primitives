@@ -28,6 +28,7 @@ export const Default: StoryFn = () => {
         { id: 'tab-2', label: 'Tab 2', icon: '🥹' },
         { id: 'tab-3', label: 'Tab 3', icon: '🥲' },
       ]}
+      activationMode="manual"
     >
       <Tabs.ControlsList
         render={({ label, icon }) => (
