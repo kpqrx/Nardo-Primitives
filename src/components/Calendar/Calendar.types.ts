@@ -9,13 +9,8 @@ export type CalendarContextType = {
   currentDate?: Date
   setCurrentDate?: React.Dispatch<React.SetStateAction<Date>>
   displayedDate?: Date
-  switchDisplayedDate?: SwitchDisplayedDateFunctionType
+  setDisplayedDate?: React.Dispatch<React.SetStateAction<Date>>
 }
-
-export type SwitchDisplayedDateFunctionType = (
-  direction: MonthDirectionType,
-  exactDate?: Date
-) => void
 
 export type MonthDirectionType = 'next' | 'previous'
 
@@ -25,21 +20,17 @@ export type MonthSwitcherProps = React.HTMLAttributes<unknown> &
     onClick?: React.MouseEventHandler<HTMLButtonElement>
   }
 
+export type DatesGridItemType = {
+  date: Date
+  onClick: () => void
+}
+
 export type DaysGridProps = React.HTMLAttributes<unknown> & {
   completeWithExtraDays?: MonthDirectionType | 'both'
-  render: (renderProps: { day: number; onClick: () => void }) => React.ReactNode
+  render: (args: DatesGridItemType) => React.ReactNode
 }
 
 export type SelectedDateProps = React.HTMLAttributes<unknown> & {
   scope: 'currentDate' | 'displayedDate'
-  render: (scopedDateObject: Date) => React.ReactNode
+  render: (scopedDateObject: Date) => JSX.Element
 }
-
-type DayType = {
-  day: number
-  monthOffset: -1 | 0 | 1
-}
-
-export type HandleSetCurrentDateType = (args: DayType) => void
-
-export type DaysArrayType = DayType[]

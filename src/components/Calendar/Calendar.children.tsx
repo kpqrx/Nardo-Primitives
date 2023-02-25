@@ -1,21 +1,34 @@
-import { getRangeIterator } from '@/utils'
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { CalendarContext } from './Calendar'
 import {
-  DaysArrayType,
+  DatesGridItemType,
   DaysGridProps,
-  HandleSetCurrentDateType,
   MonthSwitcherProps,
   SelectedDateProps,
 } from './Calendar.types'
+import {
+  endOfWeek,
+  eachDayOfInterval,
+  startOfWeek,
+  lastDayOfMonth,
+  isSameMonth,
+  addMonths,
+  differenceInDays,
+  getDaysInMonth,
+  setDate,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns'
 
 export const MonthSwitcherButton = (props: MonthSwitcherProps) => {
   const { direction, children, onClick, ...restProps } = props
-  const { switchDisplayedDate } = useContext(CalendarContext)
+  const { setDisplayedDate } = useContext(CalendarContext)
 
   const handleOnClick = (event) => {
     onClick && onClick(event)
-    switchDisplayedDate(direction)
+    setDisplayedDate((prevState) =>
+      addMonths(prevState, direction === 'next' ? 1 : -1)
+    )
   }
 
   return (
@@ -41,106 +54,50 @@ export const SelectedDate = (props: SelectedDateProps) => {
     )
   }
 
-  return <>{render(scope === 'currentDate' ? currentDate : displayedDate)}</>
+  return render(scope === 'currentDate' ? currentDate : displayedDate)
 }
 
 export const DaysGrid = (props: DaysGridProps) => {
   const { render, completeWithExtraDays, ...restProps } = props
-  const { setCurrentDate, displayedDate, switchDisplayedDate } =
+  const { setCurrentDate, displayedDate, setDisplayedDate } =
     useContext(CalendarContext)
 
-  const daysData = useMemo(() => {
-    const monthLength = new Date(
-      displayedDate.getFullYear(),
-      displayedDate.getMonth() + 1,
-      0
-    ).getDate()
-    const previousMonthLength = new Date(
-      displayedDate.getFullYear(),
-      displayedDate.getMonth(),
-      0
-    ).getDate()
-    const previousMonthDaysCount =
-      (displayedDate.getDay() === 0 ? 7 : displayedDate.getDay()) - 1
-    const nextMonthDaysCount = 7 - ((previousMonthDaysCount + monthLength) % 7)
-
-    return {
-      monthLength,
-      previousMonthLength,
-      previousMonthDaysCount,
-      nextMonthDaysCount,
-    }
-  }, [displayedDate])
-
-  const daysArray = useMemo<DaysArrayType>(() => {
-    const {
-      monthLength,
-      previousMonthLength,
-      previousMonthDaysCount,
-      nextMonthDaysCount,
-    } = daysData
-
-    const previousMonthDays = ['previous', 'both'].includes(
-      completeWithExtraDays
-    )
-      ? [
-          ...getRangeIterator({
-            start: previousMonthLength - previousMonthDaysCount + 1,
-            end: previousMonthLength,
-          }),
-        ]
-      : []
-    const currentMonthDays = [...getRangeIterator({ end: monthLength })]
-    const nextMonthDays = ['next', 'both'].includes(completeWithExtraDays)
-      ? [...getRangeIterator({ end: nextMonthDaysCount })]
-      : []
-
-    return [...previousMonthDays, ...currentMonthDays, ...nextMonthDays].map(
-      (day, index) => ({
-        day,
-        monthOffset:
-          index < previousMonthDaysCount
-            ? -1
-            : index >= previousMonthDaysCount &&
-              index < monthLength + previousMonthDaysCount
-            ? 0
-            : 1,
-      })
-    )
-  }, [displayedDate])
-
-  const handleSetCurrentDate = useCallback<HandleSetCurrentDateType>(
-    ({ day, monthOffset }) => {
-      setCurrentDate(
-        new Date(
-          displayedDate.getFullYear(),
-          displayedDate.getMonth() + monthOffset,
-          day
-        )
-      )
-      if (Math.abs(monthOffset)) {
-        switchDisplayedDate(monthOffset === -1 ? 'previous' : 'next')
-      }
-    },
+  const datesGrid = useMemo<DatesGridItemType[]>(
+    () =>
+      eachDayOfInterval({
+        start: startOfWeek(startOfMonth(displayedDate), { weekStartsOn: 1 }),
+        end: endOfWeek(endOfMonth(displayedDate), { weekStartsOn: 1 }),
+      }).map((date) => ({
+        date,
+        onClick: () => {
+          setCurrentDate(date)
+          !isSameMonth(date, displayedDate) && setDisplayedDate(date)
+        },
+      })),
     [displayedDate]
+  )
+
+  const containerDataAttributes = useMemo(
+    () => ({
+      'data-calendar-previous-month-days': differenceInDays(
+        setDate(displayedDate, 1),
+        datesGrid.at(0).date
+      ),
+      'data-calendar-next-month-days': differenceInDays(
+        datesGrid.at(-1).date,
+        lastDayOfMonth(displayedDate)
+      ),
+      'data-calendar-days': getDaysInMonth(displayedDate),
+    }),
+    [datesGrid]
   )
 
   return (
     <div
-      data-previous-month-day-slots={
-        !completeWithExtraDays ? daysData.previousMonthDaysCount : null
-      }
-      data-next-month-day-slots={
-        !completeWithExtraDays ? daysData.nextMonthDaysCount : null
-      }
+      {...containerDataAttributes}
       {...restProps}
     >
-      {daysArray.map(({ day, monthOffset }) =>
-        render({
-          day,
-          onClick: () => handleSetCurrentDate({ day, monthOffset }),
-        })
-      )}
+      {datesGrid.map((datesGridItem) => render(datesGridItem))}
     </div>
   )
 }

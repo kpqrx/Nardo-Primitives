@@ -60,8 +60,13 @@ export const Default: StoryFn = () => {
         <Calendar.DaysGrid
           className="calendar__body"
           completeWithExtraDays="both"
-          render={({ day, onClick }) => (
-            <button onClick={onClick}>{day}</button>
+          render={({ date, onClick }) => (
+            <button
+              key={date.toISOString()}
+              onClick={onClick}
+            >
+              {date.getDate()}
+            </button>
           )}
         />
       </Calendar>
