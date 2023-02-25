@@ -22,7 +22,39 @@ type Story = StoryObj<typeof Calendar>
  * to learn how to use render functions.
  */
 export const Default: StoryFn = () => {
+  return (
+    <Calendar className="calendar">
+      <div className="calendar__header">
+        <Calendar.MonthSwitcherButton direction="previous">
+          Previous
+        </Calendar.MonthSwitcherButton>
+        <Calendar.SelectedDate
+          scope="displayedDate"
+          render={(date) => <span>{date.toDateString()}</span>}
+        />
+        <Calendar.MonthSwitcherButton direction="next">
+          Next
+        </Calendar.MonthSwitcherButton>
+      </div>
+      <Calendar.DaysGrid
+        className="calendar__body"
+        completeWithExtraDays="both"
+        render={({ date, onClick }) => (
+          <button
+            key={date.toISOString()}
+            onClick={onClick}
+          >
+            {date.getDate()}
+          </button>
+        )}
+      />
+    </Calendar>
+  )
+}
+
+export const AsDatePicker: StoryFn = () => {
   const [date, setDate] = useState(new Date())
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false)
 
   const dateString = useMemo(() => {
     const day = date.getDate().toString().padStart(2, '0')
@@ -35,41 +67,43 @@ export const Default: StoryFn = () => {
   return (
     <>
       <input
-        type="date"
+        type="text"
         value={dateString}
         readOnly
-        className="elo"
+        onFocus={() => setIsCalendarVisible(true)}
       />
-      <Calendar
-        value={date}
-        onChange={setDate}
-        className="calendar"
-      >
-        <div className="calendar__header">
-          <Calendar.MonthSwitcherButton direction="previous">
-            Previous
-          </Calendar.MonthSwitcherButton>
-          <Calendar.SelectedDate
-            scope="displayedDate"
-            render={(date) => <span>{date.toDateString()}</span>}
+      {isCalendarVisible && (
+        <Calendar
+          value={date}
+          onChange={setDate}
+          className="calendar"
+        >
+          <div className="calendar__header">
+            <Calendar.MonthSwitcherButton direction="previous">
+              Previous
+            </Calendar.MonthSwitcherButton>
+            <Calendar.SelectedDate
+              scope="displayedDate"
+              render={(date) => <span>{date.toDateString()}</span>}
+            />
+            <Calendar.MonthSwitcherButton direction="next">
+              Next
+            </Calendar.MonthSwitcherButton>
+          </div>
+          <Calendar.DaysGrid
+            className="calendar__body"
+            completeWithExtraDays="both"
+            render={({ date, onClick }) => (
+              <button
+                key={date.toISOString()}
+                onClick={onClick}
+              >
+                {date.getDate()}
+              </button>
+            )}
           />
-          <Calendar.MonthSwitcherButton direction="next">
-            Next
-          </Calendar.MonthSwitcherButton>
-        </div>
-        <Calendar.DaysGrid
-          className="calendar__body"
-          completeWithExtraDays="both"
-          render={({ date, onClick }) => (
-            <button
-              key={date.toISOString()}
-              onClick={onClick}
-            >
-              {date.getDate()}
-            </button>
-          )}
-        />
-      </Calendar>
+        </Calendar>
+      )}
     </>
   )
 }
