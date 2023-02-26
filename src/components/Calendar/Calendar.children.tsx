@@ -88,6 +88,7 @@ export const DaysGrid = (props: DaysGridProps) => {
         lastDayOfMonth(displayedDate)
       ),
       'data-calendar-days': getDaysInMonth(displayedDate),
+      'data-days-grid': '',
     }),
     [datesGrid]
   )
