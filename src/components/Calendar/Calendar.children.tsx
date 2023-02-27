@@ -70,7 +70,7 @@ export const DaysGrid = (props: DaysGridProps) => {
       }).map((date) => ({
         date,
         onClick: () => {
-          setCurrentDate(date)
+          ;(setCurrentDate ?? setDisplayedDate)(date)
           !isSameMonth(date, displayedDate) && setDisplayedDate(date)
         },
       })),
