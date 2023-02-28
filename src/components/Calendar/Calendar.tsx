@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { addMonths } from 'date-fns'
+import { addMonths, isAfter } from 'date-fns'
 import React, { createContext, useState, useRef, useCallback } from 'react'
 import {
   DaysGrid,
@@ -26,8 +26,7 @@ const Calendar = (props: CalendarProps) => {
   const [displayedDate, setDisplayedDate] = useState(
     new Date(defaultDate.getFullYear(), defaultDate.getMonth(), 1)
   )
-
-  const calendarRef = useRef<HTMLDivElement>(null)
+  const focusableElementPosition = useRef(null)
 
   const getElementWithinOffset = (targetElement, focusOffset) => {
     const elementsRoot = calendarRef.current.querySelector('[data-days-grid]')
@@ -36,17 +35,26 @@ const Calendar = (props: CalendarProps) => {
     return elements[elements.indexOf(targetElement) + focusOffset]
   }
 
-  const getBoundaryElement = useCallback(
-    (bound: 'first' | 'last') => {
-      const elementsRoot = calendarRef.current.querySelector('[data-days-grid]')
-      console.log({
-        first: elementsRoot.firstChild,
-        last: elementsRoot.lastChild,
-      })
-      return elementsRoot[`${bound}Child`]
-    },
-    [displayedDate]
-  )
+  const getBoundaryElement = (bound: 'first' | 'last') => {
+    const elementsRoot = calendarRef.current.querySelector('[data-days-grid]')
+    return elementsRoot[`${bound}Child`]
+  }
+
+  const calendarRef = useRef<HTMLDivElement>()
+  const setCalendarRef = useCallback((node) => {
+    if (!node) {
+      return
+    }
+
+    calendarRef.current = node
+
+    if (focusableElementPosition.current) {
+      const focusableElement = getBoundaryElement(
+        focusableElementPosition.current
+      )
+      focusableElement.focus()
+    }
+  }, [])
 
   const onKeyDown: React.KeyboardEventHandler = (event) => {
     const { key, target } = event
@@ -64,20 +72,16 @@ const Calendar = (props: CalendarProps) => {
     }
 
     let focusableElement = getElementWithinOffset(target, offsetsMap[key])
-    console.log('within offset: ', focusableElement)
 
     if (!focusableElement) {
       const shouldIncrementMonth = offsetsMap[key] < 0
+
+      focusableElementPosition.current = shouldIncrementMonth ? 'last' : 'first'
       setDisplayedDate((prevState) =>
         addMonths(prevState, shouldIncrementMonth ? -1 : 1)
       )
-
-      focusableElement = getBoundaryElement(
-        shouldIncrementMonth ? 'first' : 'last'
-      )
+      return
     }
-
-    console.log('boundary after state change', focusableElement)
 
     if (focusableElement.focus) {
       focusableElement.focus()
@@ -94,7 +98,7 @@ const Calendar = (props: CalendarProps) => {
       }}
     >
       <div
-        ref={calendarRef}
+        ref={(node) => setCalendarRef(node)}
         {...restProps}
         onKeyDown={onKeyDown}
       >
